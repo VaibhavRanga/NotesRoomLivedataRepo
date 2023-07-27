@@ -1,5 +1,6 @@
 package com.example.notesroomlivedatarepo.activities
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
@@ -26,7 +27,12 @@ class DisplayNoteActivity : AppCompatActivity() {
         displayNoteActivityNoteViewModel = ViewModelProvider(this@DisplayNoteActivity, DisplayNoteActivityNoteViewModelFactory(noteRepository)) [DisplayNoteActivityNoteViewModel::class.java]
 
         val toAdd = intent.getBooleanExtra("toAdd", false)
-        val note = intent.getParcelableExtra<NoteModel>("note")
+        val note = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("note", NoteModel::class.java)
+        } else {
+            intent.getParcelableExtra("note")
+        }
+
         var forUpdate = false
 
         if (toAdd) {
